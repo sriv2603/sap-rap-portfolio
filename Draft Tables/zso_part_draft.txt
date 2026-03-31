@@ -1,0 +1,21 @@
+@EndUserText.label : 'Draft table for entity ZI_SO_PARTNER'
+@AbapCatalog.enhancement.category : #EXTENSIBLE_ANY
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zso_part_draft {
+
+  key mandt       : mandt not null;
+  key vbeln       : vbeln not null;
+  key parvw       : abap.char(2) not null;
+  key draftuuid   : sdraft_uuid not null;
+  parentdraftuuid : sdraft_uuid;
+  kunnr           : kunnr;
+  name1           : name1_gp;
+  cityc           : cityc;
+  pstlz           : pstlz;
+  land1           : land1_gp;
+  telf1           : telf1;
+  "%admin"        : include sych_bdl_draft_admin_inc;
+
+}

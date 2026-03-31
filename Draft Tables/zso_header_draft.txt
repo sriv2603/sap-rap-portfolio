@@ -1,0 +1,28 @@
+@EndUserText.label : 'Draft table for entity ZI_SO_HDR'
+@AbapCatalog.enhancement.category : #EXTENSIBLE_ANY
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zso_header_draft {
+
+  key mandt          : mandt not null;
+  key vbeln          : vbeln_va not null;
+  key draftuuid      : sdraft_uuid not null;
+  auart              : auart;
+  vkorg              : vkorg;
+  vtweg              : vtweg;
+  spart              : spart;
+  kunnr              : kunag;
+  erdat              : erdat;
+  erzet              : erzet;
+  ernam              : ernam;
+  vdatu              : edatu_vbak;
+  crossitem_prc_date : crossitem_prc_date;
+  @Semantics.amount.currencyCode : 'zso_header_draft.waerk'
+  netwr              : netwr_ak;
+  waerk              : waerk;
+  audat              : audat;
+  aedat              : aedat;
+  "%admin"           : include sych_bdl_draft_admin_inc;
+
+}
