@@ -1,0 +1,35 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Interface View: Sales Order Item'
+@Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
+define view entity ZI_SO_item 
+as select from vbap
+association to parent zi_so_hdr as _header
+on $projection.vbeln = _header.vbeln
+{
+      key vbeln,
+      key posnr,
+      matnr,
+      werks,
+      @Semantics.systemDate.createdAt: true             
+      fkdat_ana,
+      
+      @Semantics.quantity.unitOfMeasure: 'vrkme'
+      kwmeng,
+      vrkme,
+      @Semantics.amount.currencyCode : 'waerk'
+      ( netwr + mwsbp ) as netwr,      
+        
+        @Semantics.amount.currencyCode: 'waerk'
+        cast ( case when kwmeng = 0 then cast( 0 as abap.dec(15,2) )
+             else division( cast( ( netwr + mwsbp ) as abap.dec(15,2) ), 
+                            cast( kwmeng as abap.dec(15,2) ), 2 )
+        end as abap.curr(16,2) ) as netpr,
+        
+      waerk,
+      vstel,
+      
+      _header   // Make association public
+      
+}

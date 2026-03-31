@@ -1,0 +1,30 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Sales Order Partners'
+@Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
+define view entity ZI_SO_PARTNER 
+as select from vbpa 
+association to parent zi_so_hdr as _header
+on $projection.vbeln = _header.vbeln
+
+association to kna1 as _kna1
+on $projection.kunnr = _kna1.kunnr
+{   
+    key vbeln,
+    @EndUserText.label: 'Partner Role'
+    //@ObjectModel.foreignKey.association: '_PartnerRoleText' // Optional: if you want descriptions
+    //@Consumption.valueHelpDefinition: [{ entity: { name: 'I_PartnerRole', element: 'PartnerRole' } }]
+    @ObjectModel.text.control:#NONE  // Optional: if you have a text element for the partner role
+    //key parvw,
+    key cast( parvw as abap.char( 2 ) ) as parvw,
+    kunnr,
+    _kna1.name1,
+    _kna1.cityc,
+    _kna1.pstlz,
+    _kna1.land1,
+    _kna1.telf1,
+
+    _header, // Make association public
+    _kna1    // Make association public
+}
