@@ -2,20 +2,34 @@
 Full-stack SAP RAP implementation of a Sales Order BO using an Unmanaged Save scenario with Draft enablement, custom transactional buffering, and OData V4 service exposure on S/4HANA.
 
 
-# SAP RAP: Unmanaged Sales Order App with Custom Buffering
+# SAP RAP: Sales Order Management (Unmanaged Scenario)
 
-## 🚀 Technical Highlights
-This project demonstrates a deep dive into the **ABAP RESTful Programming Model (RAP)** using an **Unmanaged Save** scenario. It transitions from legacy ABAP patterns to modern, Cloud-ready architecture.
+## 📋 Project Overview
+This repository contains the source code for a modern Sales Order application built using the **ABAP RESTful Programming Model (RAP)**. The project focuses on the **Unmanaged Save** pattern, demonstrating how to bridge legacy ABAP logic with the modern, cloud-ready RAP orchestration.
 
-### 🧠 The "Brain" of the App: Local Buffer & Saver
-Unlike a standard Managed RAP app, I implemented a manual **Transactional Buffer** to handle the data lifecycle:
-* **Interaction Phase:** Used a Local Class `lcl_buffer` to store state in-memory during `CREATE` and `UPDATE` calls.
-* **ID Mapping:** Handled the critical mapping of `%cid` (Frontend ID) to `%pid` (Backend UUID) to ensure data consistency during the "Draft-to-Active" transition.
-* **The Saver Class:** Redefined the `SAVE_MODIFIED` method to physically commit data from the buffer to transparent tables (`zotc_t_soh/soi`), simulating a legacy API integration.
+### 🏗️ Architecture & Layers
+The application is built following the "Clean Core" principles and is structured into four distinct layers:
 
-### 🛠️ Tech Stack
-* **Language:** ABAP Cloud (Strict Mode 2)
-* **Data Modeling:** Core Data Services (CDS) View Entities
-* **Framework:** SAP RAP (Unmanaged with Draft)
-* **API:** OData V4
-* **UI:** Fiori Elements (List Report / Object Page)
+1.  **Data Modeling:** CDS View Entities for Header and Item data with specialized UI annotations.
+2.  **Behavior Definition (BDEF):** A strict contract defining Create, Update, and Delete operations with **Draft** support.
+3.  **Behavior Pool (ABP):** The core logic engine featuring:
+    * **Transactional Buffer:** A local singleton class (`lcl_buffer`) managing the state between the UI and Database.
+    * **ID Mapping:** Precise handling of `%cid` and `%pid` for consistent record creation.
+    * **Saver Class:** Manual persistence logic within the `SAVE_MODIFIED` method.
+4.  **Service Exposure:** OData V4 Service Bindings optimized for **Fiori Elements**.
+
+## 🛠️ Key Technical Features
+* **Unmanaged Save:** Complete manual control over the SAP LUW (Logical Unit of Work).
+* **Draft Capabilities:** Stateless web interaction support using `with draft`.
+* **Determinations:** Automated header-total recalculations triggered by item modifications.
+* **EML (Entity Manipulation Language):** Used for internal data access and cross-entity communication.
+* **ABAP Cloud Syntax:** Coded in `Strict(2)` mode for upgrade stability.
+
+## 📂 Repository Structure
+* `/src/ddls/` - Core Data Services (Data Definitions)
+* `/src/bdef/` - Behavior Definitions
+* `/src/classes/` - Behavior Pool Implementation (Handler & Saver)
+* `/src/srvd/` - Service Definitions & Bindings
+
+## 💡 Why this approach?
+I chose the **Unmanaged Scenario** specifically to showcase the ability to handle complex persistence requirements. By manually implementing the buffer and saver, this project simulates a real-world integration where a developer must wrap legacy Function Modules or BAPIs into a modern RAP Business Object.
